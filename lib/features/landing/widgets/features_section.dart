@@ -21,8 +21,7 @@ class FeaturesSection extends StatelessWidget {
             _FeatureCard(
               icon: Icons.restaurant,
               title: 'Track Your Diet',
-              description:
-                  'Keep your nutrition aligned with your fitness goals.',
+              description: 'Stay aligned with your fitness goals.',
               theme: theme,
             ),
             _FeatureCard(

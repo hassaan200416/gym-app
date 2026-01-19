@@ -13,8 +13,20 @@ class LandingScreen extends StatelessWidget {
         child: Column(
           children: [
             const HeroSection(),
-            const FeaturesSection(),
-            const WaitlistSection(),
+            const SizedBox(height: 24),
+            Center(
+              child: ConstrainedBox(
+                constraints: const BoxConstraints(maxWidth: 1000),
+                child: const FeaturesSection(),
+              ),
+            ),
+            const SizedBox(height: 24),
+            Center(
+              child: ConstrainedBox(
+                constraints: const BoxConstraints(maxWidth: 1000),
+                child: const WaitlistSection(),
+              ),
+            ),
           ],
         ),
       ),
