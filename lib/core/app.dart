@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
-import '../screens/auth/login_screen.dart';
-import '../screens/dashboard/dashboard_screen.dart';
+import '../features/landing/landing_screen.dart';
 import 'theme/app_theme.dart';
 
 class App extends StatelessWidget {
@@ -9,13 +8,9 @@ class App extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Flutter Demo',
+      title: 'Gym Landing',
       theme: AppTheme.light(),
-      initialRoute: '/login',
-      routes: {
-        '/login': (context) => const LoginScreen(),
-        '/dashboard': (context) => const DashboardScreen(),
-      },
+      home: const LandingScreen(),
     );
   }
 }
