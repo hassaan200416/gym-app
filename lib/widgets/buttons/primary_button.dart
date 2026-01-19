@@ -1,3 +1,7 @@
+/// Reusable primary action button with loading state support.
+/// 
+/// This button automatically disables itself when loading and displays
+/// a circular progress indicator instead of the label text.
 import 'package:flutter/material.dart';
 
 class PrimaryButton extends StatelessWidget {

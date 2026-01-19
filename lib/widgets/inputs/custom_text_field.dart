@@ -1,3 +1,11 @@
+/// Customizable text input field with built-in validation support.
+/// 
+/// Supports:
+/// - Standard text input
+/// - Password input (obscured text)
+/// - Numeric input with digit-only filtering
+/// - Custom keyboard types
+/// - Form validation integration
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 

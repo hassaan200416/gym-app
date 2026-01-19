@@ -1,3 +1,16 @@
+/// Waitlist section with email collection form.
+/// 
+/// This section allows users to:
+/// - Enter their email address
+/// - Join the waitlist via Supabase
+/// - Receive feedback on submission status
+/// 
+/// Features:
+/// - Email validation (frontend and backend)
+/// - Loading state during submission
+/// - Error handling for duplicate emails
+/// - Entrance animations
+/// - Responsive form width
 import 'package:flutter/material.dart';
 import '../../../../services/waitlist_service.dart';
 import '../../../../widgets/buttons/primary_button.dart';
@@ -10,22 +23,55 @@ class WaitlistSection extends StatefulWidget {
   State<WaitlistSection> createState() => _WaitlistSectionState();
 }
 
-class _WaitlistSectionState extends State<WaitlistSection> {
+class _WaitlistSectionState extends State<WaitlistSection> with SingleTickerProviderStateMixin {
   final _formKey = GlobalKey<FormState>();
   final _emailController = TextEditingController();
   final _waitlistService = WaitlistService();
   bool _isLoading = false;
+  
+  late AnimationController _controller;
+  late Animation<double> _fadeAnimation;
+  late Animation<Offset> _slideAnimation;
 
+  @override
+  void initState() {
+    super.initState();
+    _controller = AnimationController(
+      duration: const Duration(milliseconds: 800),
+      vsync: this,
+    );
+    _fadeAnimation = Tween<double>(begin: 0.0, end: 1.0).animate(
+      CurvedAnimation(parent: _controller, curve: Curves.easeOut),
+    );
+    _slideAnimation = Tween<Offset>(
+      begin: const Offset(0, 0.2),
+      end: Offset.zero,
+    ).animate(
+      CurvedAnimation(parent: _controller, curve: Curves.easeOut),
+    );
+    _controller.forward();
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    _emailController.dispose();
+    super.dispose();
+  }
+
+  /// Validates email format (basic check for @ and .).
   bool _isValidEmail(String email) {
     return email.isNotEmpty && email.contains('@') && email.contains('.');
   }
 
+  /// Handles form submission: validates email and submits to Supabase.
+  /// 
+  /// Shows appropriate success/error messages via SnackBar.
   Future<void> _handleSubmit() async {
     if (!_formKey.currentState!.validate()) return;
 
     final email = _emailController.text.trim();
 
-    // Validate email
     if (!_isValidEmail(email)) {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
@@ -87,87 +133,101 @@ class _WaitlistSectionState extends State<WaitlistSection> {
       width: double.infinity,
       padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 64),
       decoration: BoxDecoration(
-        color: theme.colorScheme.surfaceContainerHigh,
+        color: const Color(0xFF0F0F0F),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.06),
-            blurRadius: 16,
+            color: Colors.black.withOpacity(0.5),
+            blurRadius: 20,
             offset: const Offset(0, -4),
           ),
         ],
       ),
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
-          Text(
-            'Join the Waitlist',
-            style: const TextStyle(
-              fontSize: 30,
-              fontWeight: FontWeight.bold,
-            ),
-            textAlign: TextAlign.center,
-          ),
-          const SizedBox(height: 12),
-          Text(
-            'Be the first to experience the future of gym management.',
-            textAlign: TextAlign.center,
-            style: theme.textTheme.bodyLarge,
-          ),
-          const SizedBox(height: 24),
-          ConstrainedBox(
-            constraints: BoxConstraints(maxWidth: maxWidth),
-            child: Container(
-              padding: const EdgeInsets.all(20),
-              decoration: BoxDecoration(
-                color: theme.colorScheme.surface,
-                borderRadius: BorderRadius.circular(16),
-                boxShadow: [
-                  BoxShadow(
-                    color: Colors.black.withOpacity(0.06),
-                    blurRadius: 12,
-                    offset: const Offset(0, 4),
-                  ),
-                ],
-              ),
-              child: Form(
-                key: _formKey,
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
-                  children: [
-                    CustomTextField(
-                      controller: _emailController,
-                      label: 'Email',
-                      keyboardType: TextInputType.emailAddress,
-                      validator: (value) {
-                        if (value == null || value.trim().isEmpty) {
-                          return 'Email is required';
-                        }
-                        if (!_isValidEmail(value.trim())) {
-                          return 'Please enter a valid email';
-                        }
-                        return null;
-                      },
-                    ),
-                    const SizedBox(height: 16),
-                    PrimaryButton(
-                      label: 'Join Waitlist',
-                      onPressed: _handleSubmit,
-                      isLoading: _isLoading,
+      child: FadeTransition(
+        opacity: _fadeAnimation,
+        child: SlideTransition(
+          position: _slideAnimation,
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              Text(
+                'Join the Waitlist',
+                style: TextStyle(
+                  fontSize: 36,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.white,
+                  shadows: [
+                    Shadow(
+                      color: theme.colorScheme.primary.withOpacity(0.5),
+                      blurRadius: 15,
+                      offset: const Offset(0, 0),
                     ),
                   ],
                 ),
+                textAlign: TextAlign.center,
               ),
-            ),
+              const SizedBox(height: 12),
+              Text(
+                'Be the first to experience the future of gym management.',
+                textAlign: TextAlign.center,
+                style: theme.textTheme.bodyLarge?.copyWith(
+                  color: Colors.white.withOpacity(0.9),
+                ),
+              ),
+              const SizedBox(height: 32),
+              ConstrainedBox(
+                constraints: BoxConstraints(maxWidth: maxWidth),
+                child: Container(
+                  padding: const EdgeInsets.all(24),
+                  decoration: BoxDecoration(
+                    color: const Color(0xFF1A1A1A),
+                    borderRadius: BorderRadius.circular(20),
+                    border: Border.all(
+                      color: theme.colorScheme.primary.withOpacity(0.3),
+                      width: 1,
+                    ),
+                    boxShadow: [
+                      BoxShadow(
+                        color: theme.colorScheme.primary.withOpacity(0.2),
+                        blurRadius: 20,
+                        offset: const Offset(0, 8),
+                      ),
+                    ],
+                  ),
+                  child: Form(
+                    key: _formKey,
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                      children: [
+                        CustomTextField(
+                          controller: _emailController,
+                          label: 'Email',
+                          keyboardType: TextInputType.emailAddress,
+                          validator: (value) {
+                            if (value == null || value.trim().isEmpty) {
+                              return 'Email is required';
+                            }
+                            if (!_isValidEmail(value.trim())) {
+                              return 'Please enter a valid email';
+                            }
+                            return null;
+                          },
+                        ),
+                        const SizedBox(height: 20),
+                        PrimaryButton(
+                          label: 'Join Waitlist',
+                          onPressed: _handleSubmit,
+                          isLoading: _isLoading,
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              ),
+            ],
           ),
-        ],
+        ),
       ),
     );
-  }
-
-  @override
-  void dispose() {
-    _emailController.dispose();
-    super.dispose();
   }
 }
