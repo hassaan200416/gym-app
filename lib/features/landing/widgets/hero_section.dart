@@ -1,13 +1,14 @@
 /// Hero section widget displaying the main headline, value proposition, and CTA button.
-/// 
+///
 /// This section features:
 /// - Full-screen background image with dark gradient overlay
 /// - Animated entrance effects (fade and slide)
 /// - Responsive layout (web vs mobile)
 /// - Animated CTA button with hover effects and pulse animation
 /// - Smooth scroll-to-waitlist functionality
+library;
+
 import 'package:flutter/material.dart';
-import '../../../../widgets/buttons/primary_button.dart';
 
 class HeroSection extends StatefulWidget {
   const HeroSection({super.key});
@@ -16,7 +17,8 @@ class HeroSection extends StatefulWidget {
   State<HeroSection> createState() => _HeroSectionState();
 }
 
-class _HeroSectionState extends State<HeroSection> with SingleTickerProviderStateMixin {
+class _HeroSectionState extends State<HeroSection>
+    with SingleTickerProviderStateMixin {
   late AnimationController _controller;
   late Animation<double> _fadeAnimation;
   late Animation<Offset> _slideAnimation;
@@ -28,15 +30,14 @@ class _HeroSectionState extends State<HeroSection> with SingleTickerProviderStat
       duration: const Duration(milliseconds: 1200),
       vsync: this,
     );
-    _fadeAnimation = Tween<double>(begin: 0.0, end: 1.0).animate(
-      CurvedAnimation(parent: _controller, curve: Curves.easeOut),
-    );
+    _fadeAnimation = Tween<double>(
+      begin: 0.0,
+      end: 1.0,
+    ).animate(CurvedAnimation(parent: _controller, curve: Curves.easeOut));
     _slideAnimation = Tween<Offset>(
       begin: const Offset(0, 0.3),
       end: Offset.zero,
-    ).animate(
-      CurvedAnimation(parent: _controller, curve: Curves.easeOut),
-    );
+    ).animate(CurvedAnimation(parent: _controller, curve: Curves.easeOut));
     _controller.forward();
   }
 
@@ -52,9 +53,11 @@ class _HeroSectionState extends State<HeroSection> with SingleTickerProviderStat
     final screenHeight = MediaQuery.of(context).size.height;
     final isWeb = MediaQuery.of(context).size.width > 800;
     final heroHeight = screenHeight * 0.9;
-    const lavender = Color(0xFFD4C7FF); // slightly darker lavender for readability
+    const lavender = Color(
+      0xFFD4C7FF,
+    ); // slightly darker lavender for readability
 
-    return Container(
+    return SizedBox(
       width: double.infinity,
       height: heroHeight,
       child: Stack(
@@ -72,8 +75,8 @@ class _HeroSectionState extends State<HeroSection> with SingleTickerProviderStat
                   end: Alignment.centerRight,
                   stops: const [0.0, 0.5, 1.0],
                   colors: [
-                    Colors.black.withOpacity(0.9),
-                    Colors.black.withOpacity(0.6),
+                    Colors.black.withValues(alpha: 0.9),
+                    Colors.black.withValues(alpha: 0.6),
                     Colors.transparent,
                   ],
                 ),
@@ -111,23 +114,41 @@ class _HeroSectionState extends State<HeroSection> with SingleTickerProviderStat
   }
 
   /// Builds the web layout with entrance animations.
-  Widget _buildWebLayout(BuildContext context, ColorScheme colorScheme, Color lavender) {
+  Widget _buildWebLayout(
+    BuildContext context,
+    ColorScheme colorScheme,
+    Color lavender,
+  ) {
     return FadeTransition(
       opacity: _fadeAnimation,
       child: SlideTransition(
         position: _slideAnimation,
-        child: _buildTextContent(context, colorScheme, lavender: lavender, isWeb: true),
+        child: _buildTextContent(
+          context,
+          colorScheme,
+          lavender: lavender,
+          isWeb: true,
+        ),
       ),
     );
   }
 
   /// Builds the mobile layout with entrance animations.
-  Widget _buildMobileLayout(BuildContext context, ColorScheme colorScheme, Color lavender) {
+  Widget _buildMobileLayout(
+    BuildContext context,
+    ColorScheme colorScheme,
+    Color lavender,
+  ) {
     return FadeTransition(
       opacity: _fadeAnimation,
       child: SlideTransition(
         position: _slideAnimation,
-        child: _buildTextContent(context, colorScheme, lavender: lavender, isWeb: false),
+        child: _buildTextContent(
+          context,
+          colorScheme,
+          lavender: lavender,
+          isWeb: false,
+        ),
       ),
     );
   }
@@ -140,7 +161,9 @@ class _HeroSectionState extends State<HeroSection> with SingleTickerProviderStat
     required bool isWeb,
   }) {
     return Column(
-      crossAxisAlignment: isWeb ? CrossAxisAlignment.start : CrossAxisAlignment.center,
+      crossAxisAlignment: isWeb
+          ? CrossAxisAlignment.start
+          : CrossAxisAlignment.center,
       mainAxisSize: MainAxisSize.min,
       children: [
         Text(
@@ -154,12 +177,12 @@ class _HeroSectionState extends State<HeroSection> with SingleTickerProviderStat
             color: Colors.white,
             shadows: [
               Shadow(
-                color: colorScheme.primary.withOpacity(0.3),
+                color: colorScheme.primary.withValues(alpha: 0.3),
                 blurRadius: 20,
                 offset: const Offset(0, 0),
               ),
               Shadow(
-                color: Colors.black.withOpacity(0.8),
+                color: Colors.black.withValues(alpha: 0.8),
                 blurRadius: 15,
                 offset: const Offset(0, 2),
               ),
@@ -173,11 +196,11 @@ class _HeroSectionState extends State<HeroSection> with SingleTickerProviderStat
           style: TextStyle(
             fontSize: isWeb ? 24 : 20,
             fontWeight: FontWeight.w500,
-            color: Colors.white.withOpacity(0.95),
+            color: Colors.white.withValues(alpha: 0.95),
             height: 1.5,
             shadows: [
               Shadow(
-                color: Colors.black.withOpacity(0.6),
+                color: Colors.black.withValues(alpha: 0.6),
                 blurRadius: 8,
                 offset: const Offset(0, 1),
               ),
@@ -195,7 +218,7 @@ class _HeroSectionState extends State<HeroSection> with SingleTickerProviderStat
             height: 1.4,
             shadows: [
               Shadow(
-                color: Colors.black.withOpacity(0.8),
+                color: Colors.black.withValues(alpha: 0.8),
                 blurRadius: 10,
                 offset: const Offset(0, 2),
               ),
@@ -209,7 +232,11 @@ class _HeroSectionState extends State<HeroSection> with SingleTickerProviderStat
   }
 
   /// Builds the call-to-action button with scroll-to-waitlist functionality.
-  Widget _buildCTAButton(BuildContext context, bool isWeb, ColorScheme colorScheme) {
+  Widget _buildCTAButton(
+    BuildContext context,
+    bool isWeb,
+    ColorScheme colorScheme,
+  ) {
     return _AnimatedCTAButton(
       label: 'Join the Waitlist',
       isWeb: isWeb,
@@ -229,7 +256,7 @@ class _HeroSectionState extends State<HeroSection> with SingleTickerProviderStat
 }
 
 /// Animated CTA button with pulse effect and hover interactions.
-/// 
+///
 /// Features:
 /// - Continuous pulse animation
 /// - Hover state with gradient transition
@@ -294,19 +321,18 @@ class _AnimatedCTAButtonState extends State<_AnimatedCTAButton>
             decoration: BoxDecoration(
               gradient: LinearGradient(
                 colors: _isHovered
-                    ? [
-                        widget.colorScheme.primary,
-                        widget.colorScheme.secondary,
-                      ]
+                    ? [widget.colorScheme.primary, widget.colorScheme.secondary]
                     : [
                         widget.colorScheme.primary,
-                        widget.colorScheme.primary.withOpacity(0.8),
+                        widget.colorScheme.primary.withValues(alpha: 0.8),
                       ],
               ),
               borderRadius: BorderRadius.circular(12),
               boxShadow: [
                 BoxShadow(
-                  color: widget.colorScheme.primary.withOpacity(_isHovered ? 0.6 : 0.4),
+                  color: widget.colorScheme.primary.withValues(
+                    alpha: _isHovered ? 0.6 : 0.4,
+                  ),
                   blurRadius: _isHovered ? 20 : 12,
                   offset: Offset(0, _isHovered ? 8 : 4),
                 ),

@@ -1,16 +1,18 @@
 /// Waitlist section with email collection form.
-/// 
+///
 /// This section allows users to:
 /// - Enter their email address
 /// - Join the waitlist via Supabase
 /// - Receive feedback on submission status
-/// 
+///
 /// Features:
 /// - Email validation (frontend and backend)
 /// - Loading state during submission
 /// - Error handling for duplicate emails
 /// - Entrance animations
 /// - Responsive form width
+library;
+
 import 'package:flutter/material.dart';
 import '../../../../services/waitlist_service.dart';
 import '../../../../widgets/buttons/primary_button.dart';
@@ -23,12 +25,13 @@ class WaitlistSection extends StatefulWidget {
   State<WaitlistSection> createState() => _WaitlistSectionState();
 }
 
-class _WaitlistSectionState extends State<WaitlistSection> with SingleTickerProviderStateMixin {
+class _WaitlistSectionState extends State<WaitlistSection>
+    with SingleTickerProviderStateMixin {
   final _formKey = GlobalKey<FormState>();
   final _emailController = TextEditingController();
   final _waitlistService = WaitlistService();
   bool _isLoading = false;
-  
+
   late AnimationController _controller;
   late Animation<double> _fadeAnimation;
   late Animation<Offset> _slideAnimation;
@@ -40,15 +43,14 @@ class _WaitlistSectionState extends State<WaitlistSection> with SingleTickerProv
       duration: const Duration(milliseconds: 800),
       vsync: this,
     );
-    _fadeAnimation = Tween<double>(begin: 0.0, end: 1.0).animate(
-      CurvedAnimation(parent: _controller, curve: Curves.easeOut),
-    );
+    _fadeAnimation = Tween<double>(
+      begin: 0.0,
+      end: 1.0,
+    ).animate(CurvedAnimation(parent: _controller, curve: Curves.easeOut));
     _slideAnimation = Tween<Offset>(
       begin: const Offset(0, 0.2),
       end: Offset.zero,
-    ).animate(
-      CurvedAnimation(parent: _controller, curve: Curves.easeOut),
-    );
+    ).animate(CurvedAnimation(parent: _controller, curve: Curves.easeOut));
     _controller.forward();
   }
 
@@ -65,7 +67,7 @@ class _WaitlistSectionState extends State<WaitlistSection> with SingleTickerProv
   }
 
   /// Handles form submission: validates email and submits to Supabase.
-  /// 
+  ///
   /// Shows appropriate success/error messages via SnackBar.
   Future<void> _handleSubmit() async {
     if (!_formKey.currentState!.validate()) return;
@@ -90,7 +92,7 @@ class _WaitlistSectionState extends State<WaitlistSection> with SingleTickerProv
 
     try {
       await _waitlistService.addEmail(email);
-      
+
       if (mounted) {
         _emailController.clear();
         ScaffoldMessenger.of(context).showSnackBar(
@@ -102,16 +104,14 @@ class _WaitlistSectionState extends State<WaitlistSection> with SingleTickerProv
       }
     } catch (e) {
       if (mounted) {
-        final errorMessage = e.toString().toLowerCase().contains('duplicate') ||
+        final errorMessage =
+            e.toString().toLowerCase().contains('duplicate') ||
                 e.toString().toLowerCase().contains('unique')
             ? 'This email is already registered.'
             : 'Something went wrong. Please try again.';
-        
+
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text(errorMessage),
-            backgroundColor: Colors.red,
-          ),
+          SnackBar(content: Text(errorMessage), backgroundColor: Colors.red),
         );
       }
     } finally {
@@ -136,7 +136,7 @@ class _WaitlistSectionState extends State<WaitlistSection> with SingleTickerProv
         color: const Color(0xFF0F0F0F),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.5),
+            color: Colors.black.withValues(alpha: 0.5),
             blurRadius: 20,
             offset: const Offset(0, -4),
           ),
@@ -158,7 +158,7 @@ class _WaitlistSectionState extends State<WaitlistSection> with SingleTickerProv
                   color: Colors.white,
                   shadows: [
                     Shadow(
-                      color: theme.colorScheme.primary.withOpacity(0.5),
+                      color: theme.colorScheme.primary.withValues(alpha: 0.5),
                       blurRadius: 15,
                       offset: const Offset(0, 0),
                     ),
@@ -171,7 +171,7 @@ class _WaitlistSectionState extends State<WaitlistSection> with SingleTickerProv
                 'Be the first to experience the future of gym management.',
                 textAlign: TextAlign.center,
                 style: theme.textTheme.bodyLarge?.copyWith(
-                  color: Colors.white.withOpacity(0.9),
+                  color: Colors.white.withValues(alpha: 0.9),
                 ),
               ),
               const SizedBox(height: 32),
@@ -183,12 +183,12 @@ class _WaitlistSectionState extends State<WaitlistSection> with SingleTickerProv
                     color: const Color(0xFF1A1A1A),
                     borderRadius: BorderRadius.circular(20),
                     border: Border.all(
-                      color: theme.colorScheme.primary.withOpacity(0.3),
+                      color: theme.colorScheme.primary.withValues(alpha: 0.3),
                       width: 1,
                     ),
                     boxShadow: [
                       BoxShadow(
-                        color: theme.colorScheme.primary.withOpacity(0.2),
+                        color: theme.colorScheme.primary.withValues(alpha: 0.2),
                         blurRadius: 20,
                         offset: const Offset(0, 8),
                       ),

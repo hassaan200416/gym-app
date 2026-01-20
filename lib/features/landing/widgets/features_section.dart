@@ -1,15 +1,17 @@
 /// Features section displaying three key benefits with animated cards.
-/// 
+///
 /// This section showcases:
 /// - Find Nearby Gyms
 /// - Track Your Diet
 /// - Personalized Workouts
-/// 
+///
 /// Features:
 /// - Staggered entrance animations for each card
 /// - Responsive layout (row on web, column on mobile)
 /// - Hover effects with scale and elevation changes
 /// - Image-based feature icons
+library;
+
 import 'package:flutter/material.dart';
 
 class FeaturesSection extends StatefulWidget {
@@ -19,7 +21,8 @@ class FeaturesSection extends StatefulWidget {
   State<FeaturesSection> createState() => _FeaturesSectionState();
 }
 
-class _FeaturesSectionState extends State<FeaturesSection> with SingleTickerProviderStateMixin {
+class _FeaturesSectionState extends State<FeaturesSection>
+    with SingleTickerProviderStateMixin {
   late AnimationController _controller;
   late List<Animation<double>> _fadeAnimations;
   late List<Animation<Offset>> _slideAnimations;
@@ -36,7 +39,11 @@ class _FeaturesSectionState extends State<FeaturesSection> with SingleTickerProv
       return Tween<double>(begin: 0.0, end: 1.0).animate(
         CurvedAnimation(
           parent: _controller,
-          curve: Interval(index * 0.2, 0.8 + index * 0.1, curve: Curves.easeOut),
+          curve: Interval(
+            index * 0.2,
+            0.8 + index * 0.1,
+            curve: Curves.easeOut,
+          ),
         ),
       );
     });
@@ -48,7 +55,11 @@ class _FeaturesSectionState extends State<FeaturesSection> with SingleTickerProv
       ).animate(
         CurvedAnimation(
           parent: _controller,
-          curve: Interval(index * 0.2, 0.8 + index * 0.1, curve: Curves.easeOut),
+          curve: Interval(
+            index * 0.2,
+            0.8 + index * 0.1,
+            curve: Curves.easeOut,
+          ),
         ),
       );
     });
@@ -143,7 +154,7 @@ class _FeaturesSectionState extends State<FeaturesSection> with SingleTickerProv
 }
 
 /// Individual feature card with image, title, and description.
-/// 
+///
 /// Includes hover effects:
 /// - Scale transformation on hover
 /// - Vertical translation (lift effect)
@@ -182,89 +193,94 @@ class _FeatureCardState extends State<_FeatureCard> {
         child: MouseRegion(
           onEnter: (_) => setState(() => _isHovered = true),
           onExit: (_) => setState(() => _isHovered = false),
-          child: AnimatedContainer(
+          child: AnimatedScale(
+            scale: _isHovered ? 1.05 : 1.0,
             duration: const Duration(milliseconds: 300),
             curve: Curves.easeOut,
-            transform: Matrix4.identity()
-              ..scale(_isHovered ? 1.05 : 1.0)
-              ..translate(0.0, _isHovered ? -8.0 : 0.0),
-            child: Container(
-              decoration: BoxDecoration(
-                color: const Color(0xFF1A1A1A),
-                borderRadius: BorderRadius.circular(20),
-                boxShadow: [
-                  BoxShadow(
-                    color: _isHovered
-                        ? widget.theme.colorScheme.primary.withOpacity(0.3)
-                        : Colors.black.withOpacity(0.3),
-                    blurRadius: _isHovered ? 20 : 12,
-                    offset: Offset(0, _isHovered ? 12 : 6),
-                  ),
-                ],
-              ),
-              child: ClipRRect(
-                borderRadius: BorderRadius.circular(20),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
-                  children: [
-                    Container(
-                      height: 200,
-                      padding: const EdgeInsets.all(16),
-                      child: AnimatedScale(
-                        scale: _isHovered ? 1.1 : 1.0,
-                        duration: const Duration(milliseconds: 300),
-                        curve: Curves.easeOut,
-                        child: Image.asset(
-                          widget.imagePath,
-                          fit: BoxFit.contain,
-                          errorBuilder: (context, error, stackTrace) {
-                            return Container(
-                              decoration: BoxDecoration(
-                                gradient: LinearGradient(
-                                  begin: Alignment.topLeft,
-                                  end: Alignment.bottomRight,
-                                  colors: [
-                                    widget.theme.colorScheme.primary.withOpacity(0.3),
-                                    widget.theme.colorScheme.secondary.withOpacity(0.3),
-                                  ],
-                                ),
-                              ),
-                              child: Center(
-                                child: Icon(
-                                  Icons.fitness_center,
-                                  size: 64,
-                                  color: Colors.white.withOpacity(0.5),
-                                ),
-                              ),
-                            );
-                          },
-                        ),
-                      ),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.all(24),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            widget.title,
-                            style: widget.theme.textTheme.titleMedium?.copyWith(
-                              fontWeight: FontWeight.bold,
-                              color: Colors.white,
-                              fontSize: 20,
-                            ),
-                          ),
-                          const SizedBox(height: 12),
-                          Text(
-                            widget.description,
-                            style: widget.theme.textTheme.bodyMedium?.copyWith(
-                              color: Colors.white70,
-                            ),
-                          ),
-                        ],
-                      ),
+            child: Transform.translate(
+              offset: Offset(0.0, _isHovered ? -8.0 : 0.0),
+              child: Container(
+                decoration: BoxDecoration(
+                  color: const Color(0xFF1A1A1A),
+                  borderRadius: BorderRadius.circular(20),
+                  boxShadow: [
+                    BoxShadow(
+                      color: _isHovered
+                          ? widget.theme.colorScheme.primary.withValues(
+                              alpha: 0.3,
+                            )
+                          : Colors.black.withValues(alpha: 0.3),
+                      blurRadius: _isHovered ? 20 : 12,
+                      offset: Offset(0, _isHovered ? 12 : 6),
                     ),
                   ],
+                ),
+                child: ClipRRect(
+                  borderRadius: BorderRadius.circular(20),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: [
+                      Container(
+                        height: 200,
+                        padding: const EdgeInsets.all(16),
+                        child: AnimatedScale(
+                          scale: _isHovered ? 1.1 : 1.0,
+                          duration: const Duration(milliseconds: 300),
+                          curve: Curves.easeOut,
+                          child: Image.asset(
+                            widget.imagePath,
+                            fit: BoxFit.contain,
+                            errorBuilder: (context, error, stackTrace) {
+                              return Container(
+                                decoration: BoxDecoration(
+                                  gradient: LinearGradient(
+                                    begin: Alignment.topLeft,
+                                    end: Alignment.bottomRight,
+                                    colors: [
+                                      widget.theme.colorScheme.primary
+                                          .withValues(alpha: 0.3),
+                                      widget.theme.colorScheme.secondary
+                                          .withValues(alpha: 0.3),
+                                    ],
+                                  ),
+                                ),
+                                child: Center(
+                                  child: Icon(
+                                    Icons.fitness_center,
+                                    size: 64,
+                                    color: Colors.white.withValues(alpha: 0.5),
+                                  ),
+                                ),
+                              );
+                            },
+                          ),
+                        ),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.all(24),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              widget.title,
+                              style: widget.theme.textTheme.titleMedium
+                                  ?.copyWith(
+                                    fontWeight: FontWeight.bold,
+                                    color: Colors.white,
+                                    fontSize: 20,
+                                  ),
+                            ),
+                            const SizedBox(height: 12),
+                            Text(
+                              widget.description,
+                              style: widget.theme.textTheme.bodyMedium
+                                  ?.copyWith(color: Colors.white70),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
               ),
             ),
