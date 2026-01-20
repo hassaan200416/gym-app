@@ -52,6 +52,7 @@ class _HeroSectionState extends State<HeroSection> with SingleTickerProviderStat
     final screenHeight = MediaQuery.of(context).size.height;
     final isWeb = MediaQuery.of(context).size.width > 800;
     final heroHeight = screenHeight * 0.9;
+    const lavender = Color(0xFFD4C7FF); // slightly darker lavender for readability
 
     return Container(
       width: double.infinity,
@@ -59,33 +60,37 @@ class _HeroSectionState extends State<HeroSection> with SingleTickerProviderStat
       child: Stack(
         fit: StackFit.expand,
         children: [
-          _buildBackgroundImage(),
-          Container(
-            decoration: BoxDecoration(
-              gradient: LinearGradient(
-                begin: Alignment.topLeft,
-                end: Alignment.bottomRight,
-                colors: [
-                  Colors.black.withOpacity(0.6),
-                  Colors.black.withOpacity(0.4),
-                ],
+          // Layer 1: Background image
+          Positioned.fill(child: _buildBackgroundImage()),
+
+          // Layer 2: Gradient scrim for readability
+          Positioned.fill(
+            child: Container(
+              decoration: BoxDecoration(
+                gradient: LinearGradient(
+                  begin: Alignment.centerLeft,
+                  end: Alignment.centerRight,
+                  stops: const [0.0, 0.5, 1.0],
+                  colors: [
+                    Colors.black.withOpacity(0.9),
+                    Colors.black.withOpacity(0.6),
+                    Colors.transparent,
+                  ],
+                ),
               ),
             ),
           ),
+
+          // Layer 3: Foreground content aligned left
           Padding(
-            padding: EdgeInsets.symmetric(
-              horizontal: isWeb ? 48 : 24,
-              vertical: 0,
-            ),
-            child: Center(
+            padding: EdgeInsets.symmetric(horizontal: isWeb ? 48 : 24),
+            child: Align(
+              alignment: Alignment.centerLeft,
               child: ConstrainedBox(
                 constraints: const BoxConstraints(maxWidth: 1200),
-                child: Align(
-                  alignment: isWeb ? Alignment.centerLeft : Alignment.center,
-                  child: isWeb
-                      ? _buildWebLayout(context, colorScheme)
-                      : _buildMobileLayout(context, colorScheme),
-                ),
+                child: isWeb
+                    ? _buildWebLayout(context, colorScheme, lavender)
+                    : _buildMobileLayout(context, colorScheme, lavender),
               ),
             ),
           ),
@@ -97,10 +102,8 @@ class _HeroSectionState extends State<HeroSection> with SingleTickerProviderStat
   /// Builds the background image with error handling.
   Widget _buildBackgroundImage() {
     return Image.asset(
-      'assets/images/hero_1.jpg',
+      'assets/images/hero_1.png',
       fit: BoxFit.cover,
-      width: double.infinity,
-      height: double.infinity,
       errorBuilder: (context, error, stackTrace) {
         return Container(color: Colors.black);
       },
@@ -108,29 +111,34 @@ class _HeroSectionState extends State<HeroSection> with SingleTickerProviderStat
   }
 
   /// Builds the web layout with entrance animations.
-  Widget _buildWebLayout(BuildContext context, ColorScheme colorScheme) {
+  Widget _buildWebLayout(BuildContext context, ColorScheme colorScheme, Color lavender) {
     return FadeTransition(
       opacity: _fadeAnimation,
       child: SlideTransition(
         position: _slideAnimation,
-        child: _buildTextContent(context, colorScheme, isWeb: true),
+        child: _buildTextContent(context, colorScheme, lavender: lavender, isWeb: true),
       ),
     );
   }
 
   /// Builds the mobile layout with entrance animations.
-  Widget _buildMobileLayout(BuildContext context, ColorScheme colorScheme) {
+  Widget _buildMobileLayout(BuildContext context, ColorScheme colorScheme, Color lavender) {
     return FadeTransition(
       opacity: _fadeAnimation,
       child: SlideTransition(
         position: _slideAnimation,
-        child: _buildTextContent(context, colorScheme, isWeb: false),
+        child: _buildTextContent(context, colorScheme, lavender: lavender, isWeb: false),
       ),
     );
   }
 
   /// Builds the text content including headline, subheadline, description, and CTA.
-  Widget _buildTextContent(BuildContext context, ColorScheme colorScheme, {required bool isWeb}) {
+  Widget _buildTextContent(
+    BuildContext context,
+    ColorScheme colorScheme, {
+    required Color lavender,
+    required bool isWeb,
+  }) {
     return Column(
       crossAxisAlignment: isWeb ? CrossAxisAlignment.start : CrossAxisAlignment.center,
       mainAxisSize: MainAxisSize.min,
@@ -183,7 +191,7 @@ class _HeroSectionState extends State<HeroSection> with SingleTickerProviderStat
           style: TextStyle(
             fontSize: 18,
             fontWeight: FontWeight.normal,
-            color: const Color(0xFFFF8FA3),
+            color: lavender,
             height: 1.4,
             shadows: [
               Shadow(
