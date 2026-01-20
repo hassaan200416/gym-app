@@ -162,6 +162,3 @@ MIT
 
 ## Author
 Hassaan Raheel
-
-## Screenshots
-Screenshots were included during submission (not embedded here).
